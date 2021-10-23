@@ -19,6 +19,18 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+task copyUi(type: Copy) {
+	from new File(rootDir, "demo-ui/build")
+	into 'build/resources/main/web'
+}
+
+task preBuild {
+	dependsOn ":demo-ui:build"
+}
+build.dependsOn preBuild
+build.finalizedBy copyUi
+
+
 test {
-	useJUnitPlatform()
+//	useJUnitPlatform()
 }
