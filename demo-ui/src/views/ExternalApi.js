@@ -63,6 +63,7 @@ export const ExternalApiComponent = ({ skipToken = false }) => {
         };
       }
       const response = await fetch(`${apiOrigin}/api/${endpoint}`, {
+        method: endpoint.includes('subscriptionCheckout')?"POST":"GET",
         headers,
       });
 
@@ -200,10 +201,10 @@ export const ExternalApiComponent = ({ skipToken = false }) => {
         <Button
           color="primary"
           className="mt-5"
-          onClick={() => callApi('messages')}
+          onClick={() => callApi('subscriptionCheckout/price_1JmIdOIqCcvOBL6BZFs0jxKu')}
           disabled={!audience}
         >
-          Get Messages
+          Subscribe
         </Button>
       </div>
 

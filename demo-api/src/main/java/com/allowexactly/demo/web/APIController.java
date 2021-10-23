@@ -26,7 +26,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class APIController {
 
-    @Value( "${stripe.keys.private}" )
+    @Value("${stripe.keys.private}")
     private String secretStripeKey;
 
     SubscriptionService subscriptionService;
@@ -74,17 +74,17 @@ public class APIController {
 
         return customer.getId();
     }
-
-    public void startSubscription(String subscriptionId) throws StripeException {
+    
+    @PostMapping(value = "/subscriptionCheckout/{subscriptionId}")
+    public String startSubscription(@PathVariable String subscriptionId) throws StripeException {
         subscriptionService = new SubscriptionService(secretStripeKey);
         SessionCreateParams params = subscriptionService.createSubscriptionParams(subscriptionId);
-        Session session = Session.create(params);
-        //session.getUrl();//redirect to this url
+        return Session.create(params).getUrl(); //redirect to this url
     }
 
     @ExceptionHandler(StripeException.class)
     public String handleError(Model model, StripeException ex) {
 
-        return "error";
+        return ex.toString();
     }
 }
