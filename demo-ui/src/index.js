@@ -21,7 +21,8 @@ const providerConfig = {
   domain: config.domain,
   clientId: config.clientId,
   ...(config.audience ? { audience: config.audience } : null),
-  redirectUri: window.location.origin,
+  scope: config.scope,
+  redirectUri: `${window.location.origin}/member-page`,
   onRedirectCallback,
 };
 

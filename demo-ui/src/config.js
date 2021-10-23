@@ -12,9 +12,15 @@ export function getConfig() {
       ? configJson.audience
       : null;
 
+  const apiOrigin =
+    process.env.NODE_ENV === 'development'
+      ? process.env.REACT_APP_DEV_API_URL : process.env.REACT_APP_PROD_API_URL;
+
   return {
     domain: configJson.domain,
     clientId: configJson.clientId,
     ...(audience ? { audience } : null),
+    scope: configJson.scope,
+    apiOrigin,
   };
 }

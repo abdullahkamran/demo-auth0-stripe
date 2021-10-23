@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Button, Alert } from "reactstrap";
 import Highlight from "../components/Highlight";
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { getConfig } from "../config";
-import Loading from "../components/Loading";
 
-export const ExternalApiComponent = () => {
-  const { apiOrigin = "http://localhost:3001", audience } = getConfig();
+export const ExternalApiComponent = ({ skipToken = false }) => {
+  const { apiOrigin, audience } = getConfig();
 
   const [state, setState] = useState({
     showResult: false,
@@ -54,14 +53,17 @@ export const ExternalApiComponent = () => {
     await callApi();
   };
 
-  const callApi = async () => {
+  const callApi = async (endpoint) => {
     try {
-      const token = await getAccessTokenSilently();
-
-      const response = await fetch(`${apiOrigin}/api/external`, {
-        headers: {
+      let headers = {};
+      if (!skipToken) {
+        const token = await getAccessTokenSilently();
+        headers = {
           Authorization: `Bearer ${token}`,
-        },
+        };
+      }
+      const response = await fetch(`${apiOrigin}/api/${endpoint}`, {
+        headers,
       });
 
       const responseData = await response.json();
@@ -92,7 +94,7 @@ export const ExternalApiComponent = () => {
             You need to{" "}
             <a
               href="#/"
-              class="alert-link"
+              className="alert-link"
               onClick={(e) => handle(e, handleConsent)}
             >
               consent to get access to users api
@@ -105,7 +107,7 @@ export const ExternalApiComponent = () => {
             You need to{" "}
             <a
               href="#/"
-              class="alert-link"
+              className="alert-link"
               onClick={(e) => handle(e, handleLoginAgain)}
             >
               log in again
@@ -174,10 +176,34 @@ export const ExternalApiComponent = () => {
         <Button
           color="primary"
           className="mt-5"
-          onClick={callApi}
+          onClick={() => callApi('public')}
           disabled={!audience}
         >
-          Ping API
+          Ping Public API
+        </Button>
+        <Button
+          color="primary"
+          className="mt-5"
+          onClick={() => callApi('private')}
+          disabled={!audience}
+        >
+          Ping Private API
+        </Button>
+        <Button
+          color="primary"
+          className="mt-5"
+          onClick={() => callApi('posts')}
+          disabled={!audience}
+        >
+          Get Posts
+        </Button>
+        <Button
+          color="primary"
+          className="mt-5"
+          onClick={() => callApi('messages')}
+          disabled={!audience}
+        >
+          Get Messages
         </Button>
       </div>
 
@@ -185,7 +211,7 @@ export const ExternalApiComponent = () => {
         {state.showResult && (
           <div className="result-block" data-testid="api-result">
             <h6 className="muted">Result</h6>
-            <Highlight>
+            <Highlight key={JSON.stringify(state.apiMessage, null, 2)}>
               <span>{JSON.stringify(state.apiMessage, null, 2)}</span>
             </Highlight>
           </div>
@@ -195,6 +221,4 @@ export const ExternalApiComponent = () => {
   );
 };
 
-export default withAuthenticationRequired(ExternalApiComponent, {
-  onRedirecting: () => <Loading />,
-});
+export default ExternalApiComponent;

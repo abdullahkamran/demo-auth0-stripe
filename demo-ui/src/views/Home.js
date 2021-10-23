@@ -1,13 +1,13 @@
 import React, { Fragment } from "react";
 
 import Hero from "../components/Hero";
-import Content from "../components/Content";
+import ExternalApi from "./ExternalApi";
 
 const Home = () => (
   <Fragment>
     <Hero />
     <hr />
-    <Content />
+    <ExternalApi skipToken={true} />
   </Fragment>
 );
 

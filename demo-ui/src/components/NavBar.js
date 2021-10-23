@@ -53,18 +53,6 @@ const NavBar = () => {
                   Home
                 </NavLink>
               </NavItem>
-              {isAuthenticated && (
-                <NavItem>
-                  <NavLink
-                    tag={RouterNavLink}
-                    to="/external-api"
-                    exact
-                    activeClassName="router-link-exact-active"
-                  >
-                    External API
-                  </NavLink>
-                </NavItem>
-              )}
             </Nav>
             <Nav className="d-none d-md-block" navbar>
               {!isAuthenticated && (
@@ -93,7 +81,7 @@ const NavBar = () => {
                     <DropdownItem header>{user.name}</DropdownItem>
                     <DropdownItem
                       tag={RouterNavLink}
-                      to="/profile"
+                      to="/member-page"
                       className="dropdown-profile"
                       activeClassName="router-link-exact-active"
                     >
@@ -144,7 +132,7 @@ const NavBar = () => {
                 <NavItem>
                   <FontAwesomeIcon icon="user" className="mr-3" />
                   <RouterNavLink
-                    to="/profile"
+                    to="/member-page"
                     activeClassName="router-link-exact-active"
                   >
                     Profile
