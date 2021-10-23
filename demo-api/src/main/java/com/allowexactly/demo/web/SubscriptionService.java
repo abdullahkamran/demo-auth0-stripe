@@ -2,13 +2,13 @@ package com.allowexactly.demo.web;
 
 import com.stripe.param.checkout.SessionCreateParams;
 
-public class SubscriptionService extends ParentService{
+public class SubscriptionService extends ParentService {
 
-    public SubscriptionService(String stripeKey){
+    public SubscriptionService(String stripeKey) {
         super(stripeKey);
     }
 
-    public SessionCreateParams createSubscriptionParams(String subscriptionId){
+    public SessionCreateParams createSubscriptionParams(String subscriptionId) {
 
         // Create new Checkout Session for the order
         // Other optional params include:
@@ -17,8 +17,8 @@ public class SubscriptionService extends ParentService{
         // setCustomerEmail - lets you prefill the email input in the form
 
         return new SessionCreateParams.Builder()
-                .setSuccessUrl("")//to be routed after success
-                .setCancelUrl("")//to be routed in case of cancellation
+                .setSuccessUrl("https://example.com/success")//to be routed after success
+                .setCancelUrl("https://example.com/cancel")//to be routed in case of cancellation
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                 .addLineItem(new SessionCreateParams.LineItem.Builder()
