@@ -4,8 +4,9 @@ import { Container, Row, Col } from "reactstrap";
 import Highlight from "../components/Highlight";
 import Loading from "../components/Loading";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import ExternalApi from "./ExternalApi";
 
-export const ProfileComponent = () => {
+export const MemberPageComponent = () => {
   const { user } = useAuth0();
 
   return (
@@ -26,10 +27,13 @@ export const ProfileComponent = () => {
       <Row>
         <Highlight>{JSON.stringify(user, null, 2)}</Highlight>
       </Row>
+      <Row>
+        <ExternalApi></ExternalApi>
+      </Row>
     </Container>
   );
 };
 
-export default withAuthenticationRequired(ProfileComponent, {
+export default withAuthenticationRequired(MemberPageComponent, {
   onRedirecting: () => <Loading />,
 });
