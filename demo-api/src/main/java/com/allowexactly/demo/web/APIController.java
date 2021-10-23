@@ -1,14 +1,23 @@
 package com.allowexactly.demo.web;
 
 import com.allowexactly.demo.model.Message;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.model.Product;
+import com.stripe.model.ProductCollection;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.checkout.SessionCreateParams;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Handles requests to "/api" endpoints.
+ *
  * @see com.allowexactly.demo.security.SecurityConfig to see how these endpoints are protected.
  */
 @RestController
@@ -16,6 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 // For simplicity of this sample, allow all origins. Real applications should configure CORS for their use case.
 @CrossOrigin(origins = "*")
 public class APIController {
+
+    @Value( "${stripe.keys.private}" )
+    private String secretStripeKey;
+
+    SubscriptionService subscriptionService;
+    CustomerService customerService;
+    ProductService productService;
 
     @GetMapping(value = "/public")
     public Message publicEndpoint() {
@@ -35,5 +51,40 @@ public class APIController {
     @GetMapping(value = "/messages")
     public Message getMessages() {
         return new Message("All good. You can see this because you are Authenticated with a Token granted the 'read:messages' scope");
+    }
+
+//    @GetMapping(value = "/getAllProducts")
+//    public ProductCollection getAllProductsAPI() throws StripeException {
+//        productService = new ProductService(secretStripeKey);
+//        return Product.list(productService.createProductLstParams());
+//    }
+
+    @GetMapping(value = "/getAllProducts")
+    public List<Product> getAllProductsAPI() throws StripeException {
+        productService = new ProductService(secretStripeKey);
+        ProductCollection products = Product.list(productService.createProductLstParams());
+        return products.getData();
+    }
+
+    public String createCustomer(String email) throws StripeException {
+        customerService = new CustomerService(secretStripeKey);
+        CustomerCreateParams params = customerService.createCustomerParams(email);
+
+        Customer customer = Customer.create(params);
+
+        return customer.getId();
+    }
+
+    public void startSubscription(String subscriptionId) throws StripeException {
+        subscriptionService = new SubscriptionService(secretStripeKey);
+        SessionCreateParams params = subscriptionService.createSubscriptionParams(subscriptionId);
+        Session session = Session.create(params);
+        //session.getUrl();//redirect to this url
+    }
+
+    @ExceptionHandler(StripeException.class)
+    public String handleError(Model model, StripeException ex) {
+
+        return "error";
     }
 }

@@ -40,4 +40,7 @@ auth0:
   # Replace with the API Identifier for your Auth0 API.
   audience: https://demo/api
 
-
+stripe:
+  keys:
+    public: "pk_test_51JmI6pIqCcvOBL6BSMUyoR8vDRh0sTArvvQ4tBIrSirskZMNZiCVTrH654vCWDtlQka5pqAH2Ma0Q2DC1a6t5jjK00dXiDxOUB"
+    private: "sk_test_51JmI6pIqCcvOBL6BHeIcZXLwpcwtDCCaJcF0WBVUOdOzG9MHXMYpl2KLvwtivUURLkI2UvAx471xrukNaFHj5zgB00mFxkNMW2"

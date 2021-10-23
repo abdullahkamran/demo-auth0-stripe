@@ -1,6 +1,5 @@
 package com.allowexactly.demo.security;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +8,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
-import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtValidators;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.web.client.RestOperations;
 
 import java.time.Duration;
@@ -20,7 +22,7 @@ import java.time.Duration;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value( "${auth0.audience}" )
+    @Value("${auth0.audience}")
     private String audience;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
@@ -34,10 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         */
         http.authorizeRequests()
                 .mvcMatchers("/api/public").permitAll()
+                .mvcMatchers("/api/getAllProducts").permitAll()
                 .mvcMatchers("/api/private").authenticated()
                 .mvcMatchers("/api/posts").hasAuthority("SCOPE_read:posts")
                 .mvcMatchers("/api/messages").hasAuthority("SCOPE_read:messages")
-            .and().cors()
+                .and().cors()
                 .and().oauth2ResourceServer().jwt();
     }
 
@@ -53,9 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                JwtDecoders.fromOidcIssuerLocation(issuer);
 
         RestOperations rest = builder
-            .setConnectTimeout(Duration.ofSeconds(5))
-            .setReadTimeout(Duration.ofSeconds(5))
-            .build();
+                .setConnectTimeout(Duration.ofSeconds(5))
+                .setReadTimeout(Duration.ofSeconds(5))
+                .build();
 
         String jwkSetUri = issuer + ".well-known/jwks.json";
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).restOperations(rest).build();

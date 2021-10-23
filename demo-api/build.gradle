@@ -13,10 +13,13 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'com.stripe:stripe-java:20.84.0'
+
+	implementation 'org.springframework.boot:spring-boot-starter:2.5.5'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.5.5'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.5.5'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.5'
 }
 
 task copyUi(type: Copy) {
