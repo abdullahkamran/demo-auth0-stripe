@@ -1,11 +1,21 @@
 package com.allowexactly.demo.web;
 
+import com.stripe.Stripe;
 import com.stripe.param.checkout.SessionCreateParams;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-public class SubscriptionService extends ParentService {
+import javax.annotation.PostConstruct;
 
-    public SubscriptionService(String stripeKey) {
-        super(stripeKey);
+@Service
+public class SubscriptionService {
+
+    @Value("${stripe.keys.private}")
+    private String secretStripeKey;
+
+    @PostConstruct
+    public void init() {
+        Stripe.apiKey = secretStripeKey;
     }
 
     public SessionCreateParams createSubscriptionParams(String subscriptionId) {

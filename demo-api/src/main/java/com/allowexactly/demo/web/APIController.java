@@ -8,7 +8,6 @@ import com.stripe.model.ProductCollection;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +25,15 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class APIController {
 
-    @Value("${stripe.keys.private}")
-    private String secretStripeKey;
+    final SubscriptionService subscriptionService;
+    final CustomerService customerService;
+    final ProductService productService;
 
-    SubscriptionService subscriptionService;
-    CustomerService customerService;
-    ProductService productService;
+    public APIController(ProductService productService, CustomerService customerService, SubscriptionService subscriptionService) {
+        this.productService = productService;
+        this.customerService = customerService;
+        this.subscriptionService = subscriptionService;
+    }
 
     @GetMapping(value = "/public")
     public Message publicEndpoint() {
@@ -53,31 +55,20 @@ public class APIController {
         return new Message("All good. You can see this because you are Authenticated with a Token granted the 'read:messages' scope");
     }
 
-//    @GetMapping(value = "/getAllProducts")
-//    public ProductCollection getAllProductsAPI() throws StripeException {
-//        productService = new ProductService(secretStripeKey);
-//        return Product.list(productService.createProductLstParams());
-//    }
-
     @GetMapping(value = "/getAllProducts")
     public List<Product> getAllProductsAPI() throws StripeException {
-        productService = new ProductService(secretStripeKey);
         ProductCollection products = Product.list(productService.createProductLstParams());
         return products.getData();
     }
 
     public String createCustomer(String email) throws StripeException {
-        customerService = new CustomerService(secretStripeKey);
         CustomerCreateParams params = customerService.createCustomerParams(email);
-
         Customer customer = Customer.create(params);
-
         return customer.getId();
     }
-    
+
     @PostMapping(value = "/subscriptionCheckout/{subscriptionId}")
     public String startSubscription(@PathVariable String subscriptionId) throws StripeException {
-        subscriptionService = new SubscriptionService(secretStripeKey);
         SessionCreateParams params = subscriptionService.createSubscriptionParams(subscriptionId);
         return Session.create(params).getUrl(); //redirect to this url
     }
