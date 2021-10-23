@@ -1,0 +1,6 @@
+{
+  "domain": "dev-ctcnhqpj.us.auth0.com",
+  "clientId": "BndhsHdJvPOTNGInG8dEHN9aidyroUJ6",
+  "audience": "https://demo/api",
+  "scope": "read:messages read:posts"
+}
