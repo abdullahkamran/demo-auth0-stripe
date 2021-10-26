@@ -1,10 +1,9 @@
 package com.allowexactly.demo.web;
 
 import com.allowexactly.demo.model.Message;
+import com.allowexactly.demo.model.Product;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
-import com.stripe.model.Product;
-import com.stripe.model.ProductCollection;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -57,8 +56,7 @@ public class APIController {
 
     @GetMapping(value = "/getAllProducts")
     public List<Product> getAllProductsAPI() throws StripeException {
-        ProductCollection products = Product.list(productService.createProductLstParams());
-        return products.getData();
+        return productService.getAllProducts();
     }
 
     public String createCustomer(String email) throws StripeException {
