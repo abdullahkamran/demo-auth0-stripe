@@ -65,8 +65,8 @@ public class APIController {
         return customer.getId();
     }
 
-    @PostMapping(value = "/subscriptionCheckout/{subscriptionId}")
-    public String startSubscription(@PathVariable String subscriptionId) throws StripeException {
+    @PostMapping(value = "/subscriptionCheckout")
+    public String startSubscription(@RequestBody String subscriptionId) throws StripeException {
         SessionCreateParams params = subscriptionService.createSubscriptionParams(subscriptionId);
         return Session.create(params).getUrl(); //redirect to this url
     }
