@@ -3,8 +3,9 @@ import { Container, Row, Col } from "reactstrap";
 
 import Highlight from "../components/Highlight";
 import Loading from "../components/Loading";
+import ExternalApi from "../components/ExternalApi";
+import Pricing from "../components/Pricing";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
-import ExternalApi from "./ExternalApi";
 
 export const MemberPageComponent = () => {
   const { user } = useAuth0();
@@ -30,6 +31,7 @@ export const MemberPageComponent = () => {
       <Row>
         <ExternalApi></ExternalApi>
       </Row>
+      <Pricing></Pricing>
     </Container>
   );
 };

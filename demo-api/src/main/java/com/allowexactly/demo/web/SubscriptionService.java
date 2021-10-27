@@ -27,8 +27,8 @@ public class SubscriptionService {
         // setCustomerEmail - lets you prefill the email input in the form
 
         return new SessionCreateParams.Builder()
-                .setSuccessUrl("https://example.com/success")//to be routed after success
-                .setCancelUrl("https://example.com/cancel")//to be routed in case of cancellation
+                .setSuccessUrl("http://localhost:3000/member-page?payment-success")//to be routed after success
+                .setCancelUrl("http://localhost:3000/member-page?payment-canceled")//to be routed in case of cancellation
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                 .addLineItem(new SessionCreateParams.LineItem.Builder()
