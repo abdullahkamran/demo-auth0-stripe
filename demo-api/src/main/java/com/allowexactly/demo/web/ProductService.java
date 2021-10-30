@@ -44,9 +44,9 @@ public class ProductService {
         PriceCollection priceCollection = com.stripe.model.Price.list(createPriceListParams(productId));
 
         for (com.stripe.model.Price price : priceCollection.getData()) {
-            StringBuilder amountBuilder = new StringBuilder(price.getUnitAmountDecimal().toString());
-            amountBuilder.insert(amountBuilder.length() - 2, ".");
-            prices.add(new Price(price.getId(), price.getCurrency(), amountBuilder.toString()));
+            int amount = (int) (price.getUnitAmount() / 100);
+            int decimal = (int) (price.getUnitAmount() % 100);
+            prices.add(new Price(price.getId(), price.getCurrency(), String.valueOf(amount).concat(".").concat(String.valueOf(decimal)), price.getRecurring().getInterval()));
         }
 
         return prices;

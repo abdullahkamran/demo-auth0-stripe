@@ -11,4 +11,5 @@ public class Price {
     private String priceId;
     private String currency;
     private String unitAmount;
+    private String interval;
 }
