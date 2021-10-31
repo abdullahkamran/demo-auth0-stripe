@@ -1,4 +1,4 @@
-package com.allowexactly.demo.web;
+package com.allowexactly.demo.stripe;
 
 import com.allowexactly.demo.model.Price;
 import com.allowexactly.demo.model.Product;

@@ -24,16 +24,6 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class APIController {
 
-    final SubscriptionService subscriptionService;
-    final CustomerService customerService;
-    final ProductService productService;
-
-    public APIController(ProductService productService, CustomerService customerService, SubscriptionService subscriptionService) {
-        this.productService = productService;
-        this.customerService = customerService;
-        this.subscriptionService = subscriptionService;
-    }
-
     @GetMapping(value = "/public")
     public Message publicEndpoint() {
         return new Message("All good. You DO NOT need to be authenticated to call /api/public.");
@@ -54,26 +44,8 @@ public class APIController {
         return new Message("All good. You can see this because you are Authenticated with a Token granted the 'read:messages' scope");
     }
 
-    @GetMapping(value = "/getAllProducts")
-    public List<Product> getAllProductsAPI() throws StripeException {
-        return productService.getAllProducts();
-    }
-
-    public String createCustomer(String email) throws StripeException {
-        CustomerCreateParams params = customerService.createCustomerParams(email);
-        Customer customer = Customer.create(params);
-        return customer.getId();
-    }
-
-    @PostMapping(value = "/subscriptionCheckout")
-    public String startSubscription(@RequestBody String subscriptionId) throws StripeException {
-        SessionCreateParams params = subscriptionService.createSubscriptionParams(subscriptionId);
-        return Session.create(params).getUrl(); //redirect to this url
-    }
-
     @ExceptionHandler(StripeException.class)
     public String handleError(Model model, StripeException ex) {
-
         return ex.toString();
     }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Alert } from "reactstrap";
+import { Button } from "reactstrap";
 import { useAuth0 } from "@auth0/auth0-react";
 import { getConfig } from "../config";
 
@@ -16,6 +16,7 @@ export const PricingComponent = () => {
     getAccessTokenSilently,
     loginWithPopup,
     getAccessTokenWithPopup,
+    user,
   } = useAuth0();
 
   const handleConsent = async () => {
@@ -31,8 +32,15 @@ export const PricingComponent = () => {
     setProducts(await response.json());
   };
 
-  const subscribeProduct = async (productId) => {
-    const response = await callApi('subscriptionCheckout', 'POST', productId);
+  const subscribeProduct = async (priceId) => {
+    const response = await callApi(
+      'subscriptionCheckout',
+      'POST',
+      JSON.stringify({
+        priceId,
+        customerEmail: user.email,
+      }),
+    );
     if (response.ok) {
       const stripeUrl = await response.text();
       window.location = stripeUrl;
@@ -46,6 +54,7 @@ export const PricingComponent = () => {
         method,
         headers: {
           Authorization: `Bearer ${token}`,
+          'content-type': 'application/json'
         },
         body: requestBody,
       });
@@ -86,7 +95,7 @@ export const PricingComponent = () => {
                       color="primary"
                       key={price.priceId}
                       onClick={() => subscribeProduct(price.priceId)}>
-                      Subscribe ({price.unitAmount} {price.currency})
+                      Subscribe ({price.unitAmount} {price.currency} / {price.interval})
                     </Button>
                   ))}
                 </div>

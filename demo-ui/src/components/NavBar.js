@@ -19,12 +19,15 @@ import {
 } from "reactstrap";
 
 import { useAuth0 } from "@auth0/auth0-react";
+import { getConfig } from "../config";
 
 const NavBar = () => {
+  const { apiOrigin } = getConfig();
   const [isOpen, setIsOpen] = useState(false);
   const {
     user,
     isAuthenticated,
+    getAccessTokenSilently,
     loginWithRedirect,
     logout,
   } = useAuth0();
@@ -34,6 +37,32 @@ const NavBar = () => {
     logout({
       returnTo: window.location.origin,
     });
+
+  const requestCustomerPortalRedirect = async () => {
+    const response = await callApi(
+      'createCustomerPortalSession',
+      'POST',
+      JSON.stringify({
+        customerEmail: user.email
+      }),
+    );
+    if (response.ok) {
+      const stripeUrl = await response.text();
+      window.location = stripeUrl;
+    }
+  };
+
+  const callApi = async (endpoint, method = 'GET', requestBody = null) => {
+    const token = await getAccessTokenSilently();
+    return fetch(`${apiOrigin}/api/${endpoint}`, {
+      method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'content-type': 'application/json'
+      },
+      body: requestBody,
+    });
+  };
 
   return (
     <div className="nav-container">
@@ -88,6 +117,12 @@ const NavBar = () => {
                       <FontAwesomeIcon icon="user" className="mr-3" /> Profile
                     </DropdownItem>
                     <DropdownItem
+                      id="customerPortalBtn"
+                      onClick={() => requestCustomerPortalRedirect()}
+                    >
+                      Stripe Customer Portal
+                    </DropdownItem>
+                    <DropdownItem
                       id="qsLogoutBtn"
                       onClick={() => logoutWithRedirect()}
                     >
@@ -136,6 +171,15 @@ const NavBar = () => {
                     activeClassName="router-link-exact-active"
                   >
                     Profile
+                  </RouterNavLink>
+                </NavItem>
+                <NavItem>
+                  <RouterNavLink
+                    to="#"
+                    id="customerPortalBtn"
+                    onClick={() => requestCustomerPortalRedirect()}
+                  >
+                    Log out
                   </RouterNavLink>
                 </NavItem>
                 <NavItem>

@@ -1,4 +1,4 @@
-package com.allowexactly.demo.web;
+package com.allowexactly.demo.stripe;
 
 import com.stripe.Stripe;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -18,7 +18,7 @@ public class SubscriptionService {
         Stripe.apiKey = secretStripeKey;
     }
 
-    public SessionCreateParams createSubscriptionParams(String subscriptionId) {
+    public SessionCreateParams createSubscriptionParams(String customerId, String priceId) {
 
         // Create new Checkout Session for the order
         // Other optional params include:
@@ -27,13 +27,14 @@ public class SubscriptionService {
         // setCustomerEmail - lets you prefill the email input in the form
 
         return new SessionCreateParams.Builder()
+                .setCustomer(customerId)
                 .setSuccessUrl("http://localhost:3000/member-page?payment-success")//to be routed after success
                 .setCancelUrl("http://localhost:3000/member-page?payment-canceled")//to be routed in case of cancellation
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                 .addLineItem(new SessionCreateParams.LineItem.Builder()
                         .setQuantity(1L)
-                        .setPrice(subscriptionId)
+                        .setPrice(priceId)
                         .build()
                 ).build();
 
